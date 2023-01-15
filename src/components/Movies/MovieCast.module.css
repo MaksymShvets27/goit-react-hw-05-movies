@@ -1,0 +1,13 @@
+.castList {
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.castListUnit {
+  padding: 5px;
+  width: 25%;
+  border: 2px solid silver;
+}
