@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import css from './MovieDetails.module.css';
 import * as MoviesAPI from '../../serverApi/serverAPI';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [movieDetail, setMovieDetail] = useState();
+  const backLinkHref = location.state?.from ?? '/';
   useEffect(() => {
     MoviesAPI.fetchMoviesById(movieId).then(res => setMovieDetail(res));
   }, [movieId]);
@@ -16,7 +17,8 @@ const MovieDetails = () => {
   }
   return (
     <>
-      <button onClick={() => navigate('/')}>Back</button>
+      {console.log(location)}
+      <Link to={backLinkHref}>Back</Link>
       <div className={css.movieDetails}>
         <div className={css.moviePoster}>
           {movieDetail.poster_path !== null ? (
@@ -51,9 +53,13 @@ const MovieDetails = () => {
       </div>
       <div className={css.movieInfo}>
         <h3>Additional informations</h3>
-        <Link to="cast">Cast</Link>
+        <Link to="cast" state={{ from: backLinkHref }}>
+          Cast
+        </Link>
         {'  '}
-        <Link to="reviews">Rewievs</Link>
+        <Link to="reviews" state={{ from: backLinkHref }}>
+          Rewievs
+        </Link>
       </div>
       <Outlet />
     </>

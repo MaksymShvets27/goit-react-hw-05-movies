@@ -12,24 +12,30 @@ export const MovieCast = () => {
   }, [movieId]);
 
   return (
-    <ul className={css.castList}>
-      {credits.map(credit => {
-        return (
-          <li key={credit.id} className={css.castListUnit}>
-            {credit.profile_path !== null ? (
-              <img
-                src={`${MoviesAPI.IMG_URL}${credit.profile_path}`}
-                alt="Profile"
-                width="100%"
-              />
-            ) : (
-              <p>No Portret</p>
-            )}
-            <p>{credit.original_name}</p>
-            <p>Role: {credit.character}</p>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      {credits.length !== 0 ? (
+        <ul className={css.castList}>
+          {credits.map(credit => {
+            return (
+              <li key={credit.id} className={css.castListUnit}>
+                {credit.profile_path !== null ? (
+                  <img
+                    src={`${MoviesAPI.IMG_URL}${credit.profile_path}`}
+                    alt="Profile"
+                    width="100%"
+                  />
+                ) : (
+                  <p>No Portret</p>
+                )}
+                <p>{credit.original_name}</p>
+                <p>Role: {credit.character}</p>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p>There are no actors in the film</p>
+      )}
+    </>
   );
 };

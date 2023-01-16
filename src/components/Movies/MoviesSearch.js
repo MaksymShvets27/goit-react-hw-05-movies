@@ -1,11 +1,30 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import * as MoviesAPI from '../../serverApi/serverAPI';
 import css from './MovieSearch.module.css';
 
 const MoviesSearch = () => {
   const [inputMovies, setInputMovies] = useState('');
   const [searchMovies, setSearchMovies] = useState([]);
+
+  const [searchParams, setSearchParams] = useSearchParams('');
+  const productName = searchParams.get('name') ?? '';
+  const location = useLocation();
+
+  const updateQueryString = name => {
+    const nextParams = name !== '' ? { name } : {};
+    setSearchParams(nextParams);
+    setInputMovies(name);
+  };
+
+  useEffect(() => {
+    if (productName) {
+      MoviesAPI.fetchMoviesByName(productName).then(res =>
+        setSearchMovies(res.results)
+      );
+    }
+  }, []);
+
   const onSubmit = () => {
     if (inputMovies) {
       MoviesAPI.fetchMoviesByName(inputMovies).then(res =>
@@ -18,7 +37,8 @@ const MoviesSearch = () => {
     <div>
       <input
         placeholder="Enter movie name"
-        onChange={event => setInputMovies(event.target.value)}
+        onChange={e => updateQueryString(e.target.value)}
+        value={productName}
       ></input>
       <button onClick={onSubmit}>search</button>
       {searchMovies && (
@@ -26,7 +46,10 @@ const MoviesSearch = () => {
           {searchMovies.map(searchMovie => {
             return (
               <li key={searchMovie.id}>
-                <Link to={`/movies/${searchMovie.id}`}>
+                <Link
+                  to={`/movies/${searchMovie.id}`}
+                  state={{ from: location }}
+                >
                   {searchMovie.original_title}
                 </Link>
               </li>

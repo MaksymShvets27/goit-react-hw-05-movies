@@ -14,19 +14,21 @@ export const MovieReviews = () => {
   }, [movieId]);
 
   return (
-    <ul className={css.reviewsList}>
-      {reviews !== [] ? (
-        reviews.map(review => {
-          return (
-            <li key={review.id}>
-              <h3>{review.author}</h3>
-              <p>{review.content}</p>
-            </li>
-          );
-        })
+    <>
+      {reviews.length !== 0 ? (
+        <ul className={css.reviewsList}>
+          {reviews.map(review => {
+            return (
+              <li key={review.id}>
+                <h3>{review.author}</h3>
+                <p>{review.content}</p>
+              </li>
+            );
+          })}
+        </ul>
       ) : (
         <p>Movie don`t has reviews</p>
       )}
-    </ul>
+    </>
   );
 };
