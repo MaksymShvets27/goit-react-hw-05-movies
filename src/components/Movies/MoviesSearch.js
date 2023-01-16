@@ -6,39 +6,37 @@ import css from './MovieSearch.module.css';
 const MoviesSearch = () => {
   const [inputMovies, setInputMovies] = useState('');
   const [searchMovies, setSearchMovies] = useState([]);
-
   const [searchParams, setSearchParams] = useSearchParams('');
-  const productName = searchParams.get('name') ?? '';
+
+  const savedName = searchParams.get('inputMovies') ?? '';
   const location = useLocation();
 
-  const updateQueryString = name => {
-    const nextParams = name !== '' ? { name } : {};
-    setSearchParams(nextParams);
-    setInputMovies(name);
-  };
-
   useEffect(() => {
-    if (productName) {
-      MoviesAPI.fetchMoviesByName(productName).then(res =>
-        setSearchMovies(res.results)
-      );
+    if (!savedName) {
+      setSearchMovies([]);
+
+      return;
     }
-  }, []);
+    MoviesAPI.fetchMoviesByName(savedName).then(resp =>
+      setSearchMovies(resp.results)
+    );
+  }, [savedName]);
 
   const onSubmit = () => {
-    if (inputMovies) {
-      MoviesAPI.fetchMoviesByName(inputMovies).then(res =>
-        setSearchMovies(res.results)
-      );
+    if (!inputMovies.trim() || savedName === inputMovies.trim()) {
+      setInputMovies('');
+      return;
     }
+    setSearchParams({ inputMovies: inputMovies.trim() });
+    setInputMovies('');
   };
 
   return (
     <div>
       <input
         placeholder="Enter movie name"
-        onChange={e => updateQueryString(e.target.value)}
-        value={productName}
+        onChange={e => setInputMovies(e.target.value)}
+        value={inputMovies}
       ></input>
       <button onClick={onSubmit}>search</button>
       {searchMovies && (
